@@ -12,6 +12,7 @@ class Servidor():
 		self.NOMBRE_ARCHIVO="Amiga.mp3"
 		self.serveraddr=(self.HOST,self.PORT)
 		self.listConec=list()	# Lista de conexiones recibidas
+		self.audio=open("recibido.mp3","wb")
 		
 		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.ServerTCP:
 			self.ServerTCP.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
@@ -23,10 +24,11 @@ class Servidor():
 			print("\nReproducciendo audio...")
 			playsound(self.NOMBRE_ARCHIVO)
 			print("Fin del audio")
-	
-	    	# self.servirPorSiempre()
+
+			self.servirPorSiempre()
 
 	def servirPorSiempre(self):
+		print("Esperando instruccion...")
 	    try:
     		while True:
 	    		conn,addr=self.ServerTCP.accept()	# Conección y direccion del ciente
@@ -50,7 +52,8 @@ class Servidor():
 			while True:
 				data=conn.recv(self.buffer)
 				if data:
-					print("Instruccion recibido")
+					print("Recibiendo insturccion...")
+					self.audio.write(data)
 		except Exception as e:
 			print(e)
 		finally:

@@ -22,9 +22,8 @@ def main():
     # Informacion sobre las conexiones y acciones dentro de la carpeta
     # logging.basicConfig(filename='pyftpd.log', level=logging.INFO)
     logging.basicConfig(level=logging.INFO, format='(ServidorTCP) %(message)s',)
-
     # Instancia una clase servidor FTP y abre conexión en 0.0.0.0:2121
-    address = ('127.0.0.1', 2121)   # Direccion IP y puerto del servidor
+    address = ('127.0.0.1', 2121)   # Direccion IP y puerto de escucha del servidor
     server = FTPServer(address, handler)
 
     # configura un limite de conexiones

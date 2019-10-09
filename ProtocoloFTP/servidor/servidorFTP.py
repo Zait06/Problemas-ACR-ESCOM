@@ -24,7 +24,7 @@ def main():
     logging.basicConfig(level=logging.INFO, format='(ServidorTCP) %(message)s',)
 
     # Instancia una clase servidor FTP y abre conexión en 0.0.0.0:2121
-    address = ('127.0.0.1', 2121)
+    address = ('127.0.0.1', 2121)   # Direccion IP y puerto del servidor
     server = FTPServer(address, handler)
 
     # configura un limite de conexiones

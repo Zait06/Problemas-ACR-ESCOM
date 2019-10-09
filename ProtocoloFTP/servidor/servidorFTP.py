@@ -1,9 +1,8 @@
-import os 
-import logging
-
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
+import logging
+import os 
 
 def main():
     # Instancia un autorizador dummy para controlar usuarios "virtuales"
@@ -20,7 +19,9 @@ def main():
     # Define un string predeterminado para cuando alguien se conecte al cliente
     handler.banner = 'pyftpdlib basado en FTP, listo'
 
-    logging.basicConfig(filename='pyftpd.log', level=logging.INFO)
+    # Informacion sobre las conexiones y acciones dentro de la carpeta
+    # logging.basicConfig(filename='pyftpd.log', level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, format='(ServidorTCP) %(message)s',)
 
     # Instancia una clase servidor FTP y abre conexión en 0.0.0.0:2121
     address = ('127.0.0.1', 2121)
@@ -34,4 +35,5 @@ def main():
     server.serve_forever()
 
 if __name__ == '__main__':
+    print("Servidor a la escucha")
     main()

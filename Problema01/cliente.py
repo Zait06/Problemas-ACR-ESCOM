@@ -10,7 +10,8 @@ class Cliente():
         
         with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as self.ClientTCP:
             self.ClientTCP.connect((self.HOST,self.PORT))
-            print("Conectado...")
-            time.sleep(10)
+            print("Conectado, esperando a todo los jugadores...")
+            msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+            msgRecib=msgServer[0].decode()   # Mensaje recibido y decodificado
 
 c=Cliente()

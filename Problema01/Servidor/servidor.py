@@ -22,9 +22,12 @@ class ActivePool(object):
     def makeActive(self,name,conn,fi):    # Obtencion del candado
         self.lock.acquire()
         self.active.append(name)
+        f = open("respuesta.wma", "wb")
         logging.debug('Turno obtenido')
         conn.sendall(str.encode("play"))
         dato=conn.recv(1024)    # Coordenadas del tiro
+        while dato:
+            f.write(dato)
         logging.debug(str(dato.decode()))
         
     def makeInactive(self,name,fi,juego,k):     # Verificacion y liberacion del juego

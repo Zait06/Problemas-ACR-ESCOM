@@ -14,19 +14,18 @@ class ActivePool(object):
         self.active = []
         self.lock = threading.Lock()
 
-    def makeActive(self,name,conn,fi,juego):    # Obtencion del candado
+    def makeActive(self,name,conn,fi):    # Obtencion del candado
         self.lock.acquire()
         self.active.append(name)
-        logging.debug('Ejecutando')
+        logging.debug('Turno obtenido')
         conn.sendall(str.encode("play"))
         dato=conn.recv(1024)    # Coordenadas del tiro
         logging.debug(str(dato.decode()))
-        juego.jugadorPlay(str(dato.decode()),fi)
         
     def makeInactive(self,name,fi,juego,k):     # Verificacion y liberacion del juego
         self.active.remove(name)
         logging.debug('Liberando candado')
-        acabado=juego.verifica(fi,k)
+        acabado=False   # juego.verifica(fi,k)  # Verifica si alguien ha adivinado
         if not acabado:
             self.libera()
         return acabado,name
@@ -37,7 +36,7 @@ class ActivePool(object):
 class Servidor():
     def __init__(self,host,port,juga):
         self.HOST=host; self.PORT=int(port)
-        self.juga=int(juga)
+        self.juga=int(juga); self.hayGanador=False
         self.serveraddr=(self.HOST,self.PORT)
         self.listConec=list(); self.listHilos=list()	# Lista de conexiones recibidas e hilos
         self.pool=ActivePool(); self.ganador="" # pool=objeto de los candados
@@ -65,7 +64,7 @@ class Servidor():
                     logging.debug('Conectadndo Jugador-'+str(j)+' con direccion {}'.format(addr))
                     hilo_jugador=threading.Thread(name='Jugador-'+str(j),
                                                 target=self.iniciarJuego,
-                                                args=(conn,addr,j),)
+                                                args=(conn,addr,j,self.pool,self.sema),)
                     self.listHilos.append(hilo_jugador)
 
                 if len(self.listHilos)==self.juga and bandera:
@@ -91,19 +90,27 @@ class Servidor():
             if conn.fileno()==-1:
                 self.listConec.remove(conn)
 
-    def iniciarJuego(self,conn,addr,num):
-        logging.debug("Recibiendo datos del cliente {}".format(addr))
+    def iniciarJuego(self,conn,addr,num,pool,s):
+        logging.debug("Listo para jugar")
         try:
-            while True:
-                data=conn.recv(1024)
+            conn.sendall(bytes('go','ascii'))
+            # conn.sendall(pista)   Aquí ira una función donde mande la pista a todos los jugadores
+            contador=1
+            while not self.hayGanador:  # Si no hay un ganador, seguiremos jugando
+                logging.debug("Esperando turno")
+                time.sleep(1)
+                with s:
+                    if not self.hayGanador: # Si no hay un ganador, podemos jugar el turno
+                        name=threading.currentThread().getName()    # nombre del jugador actual
+                        time.sleep(1)
+                        pool.makeActive(name,conn,num)    # Espera de tiro
+                    contador+=1
                 
-                if data:
-                    logging.debug("Analizando")
-                    time.sleep(2)
-                
-                if not data:
-                    print("Conexion cerrada por {}".format(addr))
-                    break
+                if contador==self.juga:
+                    for i in self.listConec:  # Manda actualizacion del tiro
+                        # i.sendall(pista)
+                        time.sleep(1)
+                    contador=0
         except Exception as e:
             print(e)
         finally:

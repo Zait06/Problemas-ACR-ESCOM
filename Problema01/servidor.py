@@ -108,7 +108,7 @@ class Servidor():
                 
                 if contador==self.juga:
                     for i in self.listConec:  # Manda actualizacion del tiro
-                        # i.sendall(pista)
+                        i.sendall(bytes('Se envia nombre dado','ascii'))
                         time.sleep(1)
                     contador=0
         except Exception as e:

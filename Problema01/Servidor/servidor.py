@@ -1,3 +1,8 @@
+'''
+    Autores:
+        Hernández López Ángel Zait
+        Luciano Espina Melisa
+'''
 import os
 import sys
 import time

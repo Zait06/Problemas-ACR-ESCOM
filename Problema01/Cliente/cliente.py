@@ -29,7 +29,16 @@ class Cliente():
             msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
             if msgRecib=='play':
-                self.dirArch=input("Ingrese direccion o nombre del achivo .wav")
+                self.dirArch=input("Ingrese direccion o nombre del achivo")
+                while True:
+                    f = open(self.dirArch,"rb")
+                    content = f.read(1024)
+                while content:
+                    # Enviar contenido.
+                    self.ClientTCP.send(content)
+                    content = f.read(1024)
+        
+        break
             else:
                 print(msgRecib)
 

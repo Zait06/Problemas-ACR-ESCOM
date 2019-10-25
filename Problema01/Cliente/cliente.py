@@ -30,15 +30,9 @@ class Cliente():
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
             if msgRecib=='play':
                 self.dirArch=input("Ingrese direccion o nombre del achivo")
-                while True:
-                    f = open(self.dirArch,"rb")
-                    content = f.read(1024)
-                while content:
-                    # Enviar contenido.
-                    self.ClientTCP.send(content)
-                    content = f.read(1024)
-        
-        break
+                with open(self.dirArch, "rb") as archivo:
+                    content = archivo.read()
+                self.ClientTCP.sendto(content,(self.HOST,self.PORT))  # Envia marca
             else:
                 print(msgRecib)
 

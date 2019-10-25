@@ -10,6 +10,7 @@ import socket
 import select
 import logging
 import threading
+import adivinaQuien
 
 logging.basicConfig(level=logging.DEBUG,format='(%(threadName)-10s) %(message)s',)
 
@@ -19,18 +20,25 @@ class ActivePool(object):
         self.active = []
         self.lock = threading.Lock()
 
-    def makeActive(self,name,conn,fi):    # Obtencion del candado
+    def makeActive(self,name,conn,num):    # Obtencion del candado
         self.lock.acquire()
         self.active.append(name)
-        f = open("respuesta.wma", "wb")
         logging.debug('Turno obtenido')
-        conn.sendall(str.encode("play"))
-        dato=conn.recv(1024)    # Coordenadas del tiro
-        while dato:
-            f.write(dato)
-        logging.debug(str(dato.decode()))
+        conn.sendall(str.encode('play'))
+        f = open("respuesta.wma", "wb")     # Se crea un archivo de audio donde se guardará el archivo
+        while True:
+            try:
+                dato=conn.recv(1024)
+                if dato:                # Si hay datos a recibir, seguir escribiendo
+                    f.write(dato)
+                else:                   # sino, sal del ciclo
+                    break
+            except Exception as e:
+                print(e)
+        logging.debug('Dato recibido y guardado')
+        f.close()
         
-    def makeInactive(self,name,fi,juego,k):     # Verificacion y liberacion del juego
+    def makeInactive(self,name,fi,juego,num):     # Verificacion y liberacion del candado
         self.active.remove(name)
         logging.debug('Liberando candado')
         acabado=False   # juego.verifica(fi,k)  # Verifica si alguien ha adivinado
@@ -43,16 +51,16 @@ class ActivePool(object):
 
 class Servidor():
     def __init__(self,host,port,juga):
-        self.HOST=host; self.PORT=int(port)
-        self.juga=int(juga); self.hayGanador=False
-        self.serveraddr=(self.HOST,self.PORT)
+        self.HOST=host; self.PORT=int(port)             # IP y Puerto del servidor
+        self.juga=int(juga); self.hayGanador=False      # num. jugadores y bandera por si hay un ganador
+        self.serveraddr=(self.HOST,self.PORT)           # Dirección del servidor
         self.listConec=list(); self.listHilos=list()	# Lista de conexiones recibidas e hilos
-        self.pool=ActivePool(); self.ganador="" # pool=objeto de los candados
-        self.sema=threading.Semaphore(1)    # creacion del semaforo
+        self.pool=ActivePool(); self.ganador="" # pool=objeto de los candados; ganador=nombre del ganador
+        self.sema=threading.Semaphore(1)    # creacion del semaforo con un proceso a la vez
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.ServerTCP:   # Crea socket TCP
-            self.ServerTCP.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
-            self.ServerTCP.bind(self.serveraddr)
+            self.ServerTCP.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)     # No bloqueante
+            self.ServerTCP.bind(self.serveraddr)                                    # Servidor a la escucha
             self.ServerTCP.listen(self.juga)
             os.system("cls")
             print("Servidor TCP a la escucha con direccion IP "+str(self.HOST))
@@ -115,8 +123,8 @@ class Servidor():
                     contador+=1
                 
                 if contador==self.juga:
-                    for i in self.listConec:  # Manda actualizacion del tiro
-                        i.sendall(bytes('Se envia nombre dado','ascii'))
+                    for i in self.listConec:  # Manda siguiente pista
+                        i.sendall(bytes('Se envia la pista siguiente','ascii'))
                         time.sleep(1)
                     contador=0
         except Exception as e:

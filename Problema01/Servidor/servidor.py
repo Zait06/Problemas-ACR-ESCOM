@@ -38,7 +38,7 @@ class ActivePool(object):
         logging.debug('Dato recibido y guardado')
         f.close()
         
-    def makeInactive(self,name,fi,juego,num):     # Verificacion y liberacion del candado
+    def makeInactive(self,name,num):     # Verificacion y liberacion del candado
         self.active.remove(name)
         logging.debug('Liberando candado')
         acabado=False   # juego.verifica(fi,k)  # Verifica si alguien ha adivinado
@@ -120,6 +120,8 @@ class Servidor():
                         name=threading.currentThread().getName()    # nombre del jugador actual
                         time.sleep(1)
                         pool.makeActive(name,conn,num)    # Espera de tiro
+                        time.sleep(1)
+                        pool.makeInactive(name,num)
                     contador+=1
                 
                 if contador==self.juga:

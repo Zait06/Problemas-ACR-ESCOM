@@ -10,7 +10,7 @@ import socket
 import select
 import logging
 import threading
-import adivinaQuien
+from adivinaQuien import *
 
 logging.basicConfig(level=logging.DEBUG,format='(%(threadName)-10s) %(message)s',)
 
@@ -57,6 +57,7 @@ class Servidor():
         self.listConec=list(); self.listHilos=list()	# Lista de conexiones recibidas e hilos
         self.pool=ActivePool(); self.ganador="" # pool=objeto de los candados; ganador=nombre del ganador
         self.sema=threading.Semaphore(1)    # creacion del semaforo con un proceso a la vez
+        self.adqu=AdivinaQuien(juga)
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.ServerTCP:   # Crea socket TCP
             self.ServerTCP.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)     # No bloqueante

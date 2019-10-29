@@ -9,6 +9,7 @@ import json
 import random as rand
 
 class AdivinaQuien():
-    def __init__(self):
+    def __init__(self,numJuga):
         self.personaje=""
         self.pistas=list()
+        self.numJuga=numJuga

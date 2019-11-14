@@ -111,8 +111,8 @@ class Servidor():
         logging.debug("Listo para jugar")
         try:
             conn.sendall(bytes('go','ascii'))
-            # conn.sendall(pista)   Aquí ira una función donde mande la pista a todos los jugadores
-            contador=1
+            conn.sendall(pista)   # Nabdanis la pista a todos los jugadores
+            contador=1; numPistas=1
             while not self.hayGanador:  # Si no hay un ganador, seguiremos jugando
                 logging.debug("Esperando turno")
                 time.sleep(1)
@@ -124,12 +124,15 @@ class Servidor():
                         time.sleep(1)
                         pool.makeInactive(name,num)
                     contador+=1
-                
-                if contador==self.juga:
-                    for i in self.listConec:  # Manda siguiente pista
-                        i.sendall(bytes('Se envia la pista siguiente','ascii'))
-                        time.sleep(1)
-                    contador=0
+                if numPistas<=5:
+                    if contador==self.juga:
+                        for i in self.listConec:  # Manda siguiente pista
+                            i.sendall(bytes('Se envia la pista siguiente','ascii'))
+                            time.sleep(1)
+                        contador=0
+                elif numPistas>5 and self.hayGanador:
+                    for i in self.listConec:
+                        i.sendall(bytes('Juego terminado'))
         except Exception as e:
             print(e)
         finally:

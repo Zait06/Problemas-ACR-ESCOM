@@ -26,15 +26,11 @@ class ActivePool(object):
         logging.debug('Turno obtenido')
         conn.sendall(str.encode('play'))
         f = open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
-        while True:
-            try:
-                dato=conn.recv(1024)
-                if dato:                # Si hay datos a recibir, seguir escribiendo
-                    f.write(dato)
-                else:                   # sino, sal del ciclo
-                    break
-            except Exception as e:
-                print(e)
+        try:
+            dato=conn.recv(1024)              # Si hay datos a recibir, seguir escribiendo
+            f.write(dato)
+        except Exception as e:
+            print(e)
         logging.debug('Dato recibido y guardado')
         f.close()
         
@@ -42,7 +38,7 @@ class ActivePool(object):
         self.active.remove(name)
         resp=jue.convAudText()              # El audio recibido, se manda a texto
         logging.debug('Liberando candado')
-        acabado=jue.verifica(respa)         # Verifica si alguien ha adivinado
+        acabado=jue.verifica(resp)         # Verifica si alguien ha adivinado
         if not acabado:
             self.libera()
         return acabado,name

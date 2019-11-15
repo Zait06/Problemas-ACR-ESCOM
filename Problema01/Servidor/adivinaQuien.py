@@ -41,6 +41,7 @@ class AdivinaQuien():
         with respuesta as source:
             audio=r.record(source)
         texto=r.recognize_google(audio,language='es-mx',show_all=True)
+        print(texto)
         listaTexto=texto['alternative']
         listaRespuestas=list()
         for i in listaTexto:

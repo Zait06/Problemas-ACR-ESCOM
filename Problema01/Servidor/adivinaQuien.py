@@ -20,22 +20,22 @@ class AdivinaQuien():
     def elegirPersonaje(self):
         a=rand.randrange(5)
         if a==0:    
-            self.persDoc="Porfirio Diaz"
+            self.persDoc="Porfirio Diaz.txt"
             self.personaje=["porfirio diaz"]
         elif a==1:
-            self.persDoc="Francisco I Madero"
+            self.persDoc="Francisco I Madero.txt"
             self.personaje=["francisco i madero","francisco imadero"]
         elif a==2:
-            self.persDoc="Emiliano Zapata"
+            self.persDoc="Emiliano Zapata.txt"
             self.personaje=["emiliano zapata"]
         elif a==3:
-            self.persDoc="Venustiano Carranza"
+            self.persDoc="Venustiano Carranza.txt"
             self.personaje=["venustiano carranza"]
         elif a==4:
-            self.persDoc="Francisco Villa"
+            self.persDoc="Francisco Villa.txt"
             self.personaje=["francisco villa","pancho villa"]
 
-    def convAudText(self,listPosiPersonaje):
+    def convAudText(self):
         r = sr.Recognizer()
         respuesta = sr.AudioFile('respuesta.wav')
         with respuesta as source:
@@ -45,7 +45,7 @@ class AdivinaQuien():
         listaRespuestas=list()
         for i in listaTexto:
             listaRespuestas.append(i['transcript'])
-        print(listaRespuestas)
+        return listaRespuestas
 
     def pistaPersonaje(self,line):
         f=open(self.persDoc,'rb')
@@ -56,3 +56,15 @@ class AdivinaQuien():
                 break
             i+=1
         return psta
+
+    def verifica(self,listaPersona):
+        ganador=False
+        for pp in listaPersona:
+            if pp==self.personaje[0]:
+                ganador=True
+                break
+            if len(self.personaje>1):
+                if pp==self.personaje[1]:
+                    ganador=True
+                    break
+        return ganador

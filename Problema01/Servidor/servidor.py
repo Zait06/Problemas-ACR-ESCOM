@@ -38,10 +38,11 @@ class ActivePool(object):
         logging.debug('Dato recibido y guardado')
         f.close()
         
-    def makeInactive(self,name,num):     # Verificacion y liberacion del candado
+    def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado
         self.active.remove(name)
+        resp=jue.convAudText()              # El audio recibido, se manda a texto
         logging.debug('Liberando candado')
-        acabado=False   # juego.verifica(fi,k)  # Verifica si alguien ha adivinado
+        acabado=jue.verifica(respa)         # Verifica si alguien ha adivinado
         if not acabado:
             self.libera()
         return acabado,name
@@ -54,6 +55,7 @@ class Servidor():
         self.HOST=host; self.PORT=int(port)             # IP y Puerto del servidor
         self.juga=int(juga); self.hayGanador=False      # num. jugadores y bandera por si hay un ganador
         self.serveraddr=(self.HOST,self.PORT)           # Dirección del servidor
+        self.contador=1; self.numPistas=1
         self.listConec=list(); self.listHilos=list()	# Lista de conexiones recibidas e hilos
         self.pool=ActivePool(); self.ganador="" # pool=objeto de los candados; ganador=nombre del ganador
         self.sema=threading.Semaphore(1)    # creacion del semaforo con un proceso a la vez
@@ -111,8 +113,7 @@ class Servidor():
         logging.debug("Listo para jugar")
         try:
             conn.sendall(bytes('go','ascii'))
-            conn.sendall(pista)   # Nabdanis la pista a todos los jugadores
-            contador=1; numPistas=1
+            conn.sendall(self.adqu.pistaPersonaje(self.numPistas))   # Manda la pista a todos los jugadores
             while not self.hayGanador:  # Si no hay un ganador, seguiremos jugando
                 logging.debug("Esperando turno")
                 time.sleep(1)
@@ -122,15 +123,16 @@ class Servidor():
                         time.sleep(1)
                         pool.makeActive(name,conn,num)    # Espera de tiro
                         time.sleep(1)
-                        pool.makeInactive(name,num)
-                    contador+=1
-                if numPistas<=5:
-                    if contador==self.juga:
+                        pool.makeInactive(name,num,self.adqu)
+                    self.contador+=1
+                if self.numPistas<=5:
+                    if self.contador==self.juga:
+                        self.numPistas+=1
                         for i in self.listConec:  # Manda siguiente pista
-                            i.sendall(bytes('Se envia la pista siguiente','ascii'))
+                            i.sendall(bytes(self.adqu.pistaPersonaje(self.numPistas),'ascii'))
                             time.sleep(1)
-                        contador=0
-                elif numPistas>5 and self.hayGanador:
+                        self.contador=0
+                elif self.numPistas>5 and not self.hayGanador:
                     for i in self.listConec:
                         i.sendall(bytes('Juego terminado'))
         except Exception as e:

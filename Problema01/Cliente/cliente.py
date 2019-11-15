@@ -27,17 +27,18 @@ class Cliente():
                 print(msgRecib)
     
     def aJugar(self):
+        print("Preparados para jugar")
         while True:
             msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
             if msgRecib=='play':
                 grab=input("Precione [G] para grabar el audio...")
-                if grab.upper()=='M':
+                if grab.upper()=='G':
                     self.grabar()
                 else:
                     print("Algo anda mal :c")
-                with open(self.archivo, "rb") as archivo:
-                    content = self.archivo.read()
+                with open(self.archivo, "rb") as audio:
+                    content = audio.read()
                 self.ClientTCP.sendto(content,(self.HOST,self.PORT))  # Envia marca
             else:
                 print(msgRecib)

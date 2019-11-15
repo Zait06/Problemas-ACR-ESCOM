@@ -25,7 +25,7 @@ class ActivePool(object):
         self.active.append(name)
         logging.debug('Turno obtenido')
         conn.sendall(str.encode('play'))
-        f = open("respuesta.wma", "wb")     # Se crea un archivo de audio donde se guardará el archivo
+        f = open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
         while True:
             try:
                 dato=conn.recv(1024)

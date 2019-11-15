@@ -17,6 +17,7 @@ class Cliente():
         
         with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as self.ClientTCP:
             self.ClientTCP.connect((self.HOST,self.PORT))
+            os.system("cls")
             print("Conectado, esperando a todo los jugadores...\n")
             msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
@@ -32,7 +33,7 @@ class Cliente():
             msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
             if msgRecib=='play':
-                grab=input("Precione [G] para grabar el audio...")
+                grab=input("Precione [G] para grabar el audio... ")
                 if grab.upper()=='G':
                     self.grabar()
                 else:
@@ -40,6 +41,7 @@ class Cliente():
                 with open(self.archivo, "rb") as audio:
                     content = audio.read()
                 self.ClientTCP.sendto(content,(self.HOST,self.PORT))  # Envia marca
+                print("Enviado...")
             else:
                 print(msgRecib)
 

@@ -5,7 +5,8 @@
 '''
 import os
 import sys
-import json
+import wave
+import pyaudio
 import random as rand
 import speech_recognition as sr
 
@@ -15,6 +16,7 @@ class AdivinaQuien():
         self.personaje=list()
         self.pistas=list()
         self.numJuga=numJuga
+        self.r=sr.Recognizer()
         self.elegirPersonaje()
 
     def elegirPersonaje(self):
@@ -36,16 +38,16 @@ class AdivinaQuien():
             self.personaje=["francisco villa","pancho villa"]
 
     def convAudText(self):
-        r = sr.Recognizer()
         respuesta = sr.AudioFile('respuesta.wav')
         with respuesta as source:
-            audio=r.record(source)
-        texto=r.recognize_google(audio,language='es-mx',show_all=True)
-        print(texto)
+            audio=self.r.record(source)
+        print(type(audio))
+        texto=self.r.recognize_google(audio,language='es-mx',show_all=True)
         listaTexto=texto['alternative']
         listaRespuestas=list()
         for i in listaTexto:
             listaRespuestas.append(i['transcript'])
+        print(listaRespuestas)
         return listaRespuestas
 
     def pistaPersonaje(self,line):

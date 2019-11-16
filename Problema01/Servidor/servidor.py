@@ -27,8 +27,11 @@ class ActivePool(object):
         conn.sendall(str.encode('play'))
         f = open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
         try:
-            dato=conn.recv(1024)              # Si hay datos a recibir, seguir escribiendo
-            f.write(dato)
+            dato=conn.recv(1024)        # Si hay datos a recibir, seguir escribiendo
+            while dato:
+                logging.debug('Recibiendo...')
+                f.write(dato)
+            dato=conn.recv(1024)
         except Exception as e:
             print(e)
         logging.debug('Dato recibido y guardado')

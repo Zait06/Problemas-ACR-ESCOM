@@ -40,7 +40,7 @@ class Cliente():
                     print("Algo anda mal :c")
                 with open(self.archivo, "rb") as audio:
                     content = audio.read()
-                self.ClientTCP.sendto(content,(self.HOST,self.PORT))  # Envia marca
+                    self.ClientTCP.sendto(content,(self.HOST,self.PORT))  # Envia audio
                 print("Enviado...")
             else:
                 print(msgRecib)

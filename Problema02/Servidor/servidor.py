@@ -23,13 +23,13 @@ class Servidor():
     def eleccionCliente(self,opc):
         servicio=''
         if opc==1:
-            server.register_instance(AccesoRemoto())
+            self.server.register_instance(AccesoRemoto())
             servicio='Acceso Remoto'
         elif opc==2:
-            server.register_instance(Correo())
+            self.server.register_instance(Correo())
             servicio='Correo'
         elif opc==3:
-            server.register_instance(Archivos())
+            self.server.register_instance(Archivos())
             servicio='Archivos'
         return servicio
 

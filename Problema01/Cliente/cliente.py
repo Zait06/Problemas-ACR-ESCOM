@@ -45,13 +45,14 @@ class Cliente():
             else:
                 print(msgRecib)
 
+#Metodo para grabar
     def grabar(self):
         # Definicion de parametros
         FORMAT=pyaudio.paInt16
         CHANNELS=2
         RATE=44100
         CHUNK=1024
-        duracion=3
+        duracion=3 #3 segundos de grabacion
 
         # Inicialización de Pyaudio
         audio=pyaudio.PyAudio()

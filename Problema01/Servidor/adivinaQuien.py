@@ -37,13 +37,16 @@ class AdivinaQuien():
             self.persDoc="Francisco Villa.txt"
             self.personaje=["francisco villa","pancho villa"]
 
+#Convierte el audio a texto
     def convAudText(self):
+        #La respuesta se convierte en .wav
         respuesta = sr.AudioFile('respuesta.wav')
         with respuesta as source:
             audio=self.r.record(source)
         print(type(audio))
         texto=self.r.recognize_google(audio,language='es-mx',show_all=True)
         listaTexto=texto['alternative']
+        #Guarda las respuestas recibidas en una lista
         listaRespuestas=list()
         for i in listaTexto:
             listaRespuestas.append(i['transcript'])
@@ -60,6 +63,7 @@ class AdivinaQuien():
             i+=1
         return psta
 
+#Verifica si la lista de los personajes es igual a los que se tiene en las respuestas
     def verifica(self,listaPersona):
         ganador=False
         for pp in listaPersona:

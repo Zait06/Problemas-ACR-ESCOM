@@ -25,17 +25,17 @@ class ActivePool(object):
         self.active.append(name)
         logging.debug('Turno obtenido')
         conn.sendall(str.encode('play'))
-        f = open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
-        try:
-            dato=conn.recv(1024)        # Si hay datos a recibir, seguir escribiendo
-            while dato:
-                logging.debug('Recibiendo...')
-                f.write(dato)
+        f=open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
+        dato=conn.recv(1024)        # Si hay datos a recibir, seguir escribiendo
+        while dato:
+            sizefile = os.path.getsize("respuesta.wav")
+            print(sizefile)
+            if sizefile>=528428:
+                f.close()
+                break
+            f.write(dato)
             dato=conn.recv(1024)
-        except Exception as e:
-            print(e)
         logging.debug('Dato recibido y guardado')
-        f.close()
         
     def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado
         self.active.remove(name)
@@ -53,7 +53,7 @@ class Servidor():
     def __init__(self,host,port,juga):
         self.HOST=host; self.PORT=int(port)             # IP y Puerto del servidor
         self.juga=int(juga); self.hayGanador=False      # num. jugadores y bandera por si hay un ganador
-        self.serveraddr=(self.HOST,self.PORT)           # Dirección del servidor
+        self.serveraddr=(self.HOST,self.PORT)                # Dirección del servidor
         self.contador=1; self.numPistas=1
         self.listConec=list(); self.listHilos=list()	# Lista de conexiones recibidas e hilos
         self.pool=ActivePool(); self.ganador="" # pool=objeto de los candados; ganador=nombre del ganador

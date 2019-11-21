@@ -38,9 +38,14 @@ class Cliente():
                     self.grabar()
                 else:
                     print("Algo anda mal :c")
-                with open(self.archivo, "rb") as audio:
-                    content = audio.read()
-                    self.ClientTCP.sendto(content,(self.HOST,self.PORT))  # Envia audio
+                # Enviar archivo de audio
+                sizefile = os.path.getsize(self.archivo)
+                print(sizefile)
+                audio=open(self.archivo, "rb")
+                content = audio.read(1024)
+                while content:
+                    self.ClientTCP.send(content)  # Envia audio
+                    content=audio.read(1024)
                 print("Enviado...")
             else:
                 print(msgRecib)

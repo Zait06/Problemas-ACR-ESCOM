@@ -17,8 +17,9 @@ logging.basicConfig(level=logging.DEBUG,format='(%(threadName)-10s) %(message)s'
 class ActivePool(object):
     def __init__(self):
         super(ActivePool, self).__init__()
+        self.lock = threading.Lock()        
         self.active = []
-        self.lock = threading.Lock()
+
 
     def makeActive(self,name,conn):    # Obtencion del candado
         self.lock.acquire()
@@ -26,11 +27,11 @@ class ActivePool(object):
         logging.debug('Turno obtenido')
         conn.sendall(str.encode('play'));i=0
         f=open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
-        dato=conn.recv(1024)        # Si hay datos a recibir, seguir escribiendo
+            # Si hay datos a recibir, seguir escribiendo
+        dato=conn.recv(512)
         while dato:
-            print("Recibiendo "+str(i));i+=1
             f.write(dato)
-            dato=conn.recv(1024)
+            dato=conn.recv(512)
         logging.debug("Informacion recibida...")
         
     def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado

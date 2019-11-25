@@ -39,11 +39,10 @@ class Cliente():
                 else:
                     print("Algo anda mal :c")
                 # Enviar archivo de audio
-                sizefile = os.path.getsize(self.archivo)
-                print(sizefile)
-                audio=open(self.archivo, "rb")
+                audio=open(self.archivo, "rb"); i=0
                 content = audio.read(1024)
                 while content:
+                    print('Mandando '+str(i)); i+=1
                     self.ClientTCP.send(content)  # Envia audio
                     content=audio.read(1024)
                 print("Enviado...")

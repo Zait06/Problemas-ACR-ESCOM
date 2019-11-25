@@ -20,22 +20,18 @@ class ActivePool(object):
         self.active = []
         self.lock = threading.Lock()
 
-    def makeActive(self,name,conn,num):    # Obtencion del candado
+    def makeActive(self,name,conn):    # Obtencion del candado
         self.lock.acquire()
         self.active.append(name)
         logging.debug('Turno obtenido')
-        conn.sendall(str.encode('play'))
+        conn.sendall(str.encode('play'));i=0
         f=open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
         dato=conn.recv(1024)        # Si hay datos a recibir, seguir escribiendo
         while dato:
-            sizefile = os.path.getsize("respuesta.wav")
-            print(sizefile)
-            if sizefile>=528428:
-                f.close()
-                break
+            print("Recibiendo "+str(i));i+=1
             f.write(dato)
             dato=conn.recv(1024)
-        logging.debug('Dato recibido y guardado')
+        logging.debug("Informacion recibida...")
         
     def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado
         self.active.remove(name)
@@ -120,7 +116,7 @@ class Servidor():
                     if not self.hayGanador: # Si no hay un ganador, podemos jugar el turno
                         name=threading.currentThread().getName()    # nombre del jugador actual
                         time.sleep(1)
-                        pool.makeActive(name,conn,num)    # Espera de tiro
+                        pool.makeActive(name,conn)    # Espera de tiro
                         time.sleep(1)
                         pool.makeInactive(name,num,self.adqu)
                     self.contador+=1

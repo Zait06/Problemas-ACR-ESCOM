@@ -38,13 +38,15 @@ class Cliente():
                     self.grabar()
                 else:
                     print("Algo anda mal :c")
+
+                #sizefile = os.stat(self.archivo).st_size
+                #self.ClientTCP.send(str.encode(str(sizefile)))  # Mandamos el tamaño del archivo
+
                 # Enviar archivo de audio
-                audio=open(self.archivo, "rb"); i=0
-                content = audio.read(1024)
-                while content:
-                    print('Mandando '+str(i)); i+=1
-                    self.ClientTCP.send(content)  # Envia audio
-                    content=audio.read(1024)
+                audio=open(self.archivo, "rb")
+                content = audio.read()
+                self.ClientTCP.sendall(content)  # Envia audio
+                audio.close()
                 print("Enviado...")
             else:
                 print(msgRecib)

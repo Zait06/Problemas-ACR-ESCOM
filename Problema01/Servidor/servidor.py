@@ -28,15 +28,15 @@ class ActivePool(object):
         conn.sendall(str.encode('play'));i=0
         f=open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
             # Si hay datos a recibir, seguir escribiendo
-        taman=conn.recv(1024)
-        taman=int(taman.decode())
-        dato=conn.recv(1024)
         while True:
+            dato=conn.recv(1024)
             if not dato:
                 print("Si entro")
                 break
-            f.write(dato)
-            dato=conn.recv(1024)
+            else:
+                f.write(dato)
+                
+
         logging.debug("Informacion recibida...")
         
     def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado

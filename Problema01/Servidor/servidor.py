@@ -10,6 +10,7 @@ import socket
 import select
 import logging
 import threading
+from os import path
 from adivinaQuien import *
 
 logging.basicConfig(level=logging.DEBUG,format='(%(threadName)-10s) %(message)s',)
@@ -25,19 +26,28 @@ class ActivePool(object):
         self.lock.acquire()
         self.active.append(name)
         logging.debug('Turno obtenido')
-        conn.sendall(str.encode('play'));i=0
+        conn.sendall(str.encode('play'))
         f=open("respuesta.wav", "wb")     # Se crea un archivo de audio donde se guardará el archivo
-            # Si hay datos a recibir, seguir escribiendo
-        while True:
-            dato=conn.recv(1024)
-            if not dato:
-                print("Si entro")
-                break
-            else:
-                f.write(dato)
-                
+        # Si hay datos a recibir, seguir escribiendo
+        dato=conn.recv(8).decode()
+        dato = dato.split('-')
+        tamReciv=int(dato[0])
+        datoAud=bytearray()
 
         logging.debug("Informacion recibida...")
+        #datoAud=conn.recv(tamReciv)
+
+        while len(datoAud) < tamReciv:
+            print("recibiendo ...")
+            packet = conn.recv(tamReciv-len(datoAud))
+            if not packet:
+                print("Extendidoasdas...")
+                return None
+            print("Extendido...")
+            datoAud.extend(packet)
+        f.write(datoAud)
+        AUDIO_FILE = path.join(path.dirname(path.realpath(__file__)), "respuesta.wav")
+        
         
     def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado
         self.active.remove(name)

@@ -9,6 +9,8 @@ import time
 import wave
 import socket
 import pyaudio
+from array import array
+from os import stat
 
 class Cliente():
     def __init__(self,host,port):
@@ -20,6 +22,7 @@ class Cliente():
             os.system("cls")
             print("Conectado, esperando a todo los jugadores...\n")
             msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+            print(msgServer)
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
             if msgRecib=="go":
                 self.aJugar()
@@ -38,13 +41,23 @@ class Cliente():
                     self.grabar()
                 else:
                     print("Algo anda mal :c")
+
+                #sizefile = os.stat(self.archivo).st_sizeasdf
+                #self.ClientTCP.send(str.encode(str(sizefile)))  # Mandamos el tamaño del archivo
+
                 # Enviar archivo de audio
-                audio=open(self.archivo, "rb"); i=0
-                content = audio.read(1024)
-                while content:
-                    print('Mandando '+str(i)); i+=1
-                    self.ClientTCP.send(content)  # Envia audio
-                    content=audio.read(1024)
+
+                arr = array('B')
+                result = stat("personaje.wav")
+                f = open("C:/Users/cat-b/Documents/GitHub/Problemas-ACR-ESCOM/Problema01/Cliente/personaje.wav", 'rb')
+                arr.fromfile(f, result.st_size)
+                au = os.path.getsize('personaje.wav')
+                tamEnvi=str(au)
+                print("Debe enviar " + tamEnvi)
+                self.ClientTCP.sendall("{}-{}".format(tamEnvi, "a").encode())
+                #audio=open(self.archivo, "rb"
+                self.ClientTCP.sendall(arr)  # Envia audio
+                #audio.close()
                 print("Enviado...")
             else:
                 print(msgRecib)

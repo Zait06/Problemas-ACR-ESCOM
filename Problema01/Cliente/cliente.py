@@ -39,7 +39,7 @@ class Cliente():
                 else:
                     print("Algo anda mal :c")
 
-                #sizefile = os.stat(self.archivo).st_size
+                #sizefile = os.stat(self.archivo).st_sizeasdf
                 #self.ClientTCP.send(str.encode(str(sizefile)))  # Mandamos el tamaño del archivo
 
                 # Enviar archivo de audio

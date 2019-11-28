@@ -23,16 +23,16 @@ class AdivinaQuien():
         a=rand.randrange(5)
         if a==0:    
             self.persDoc="Porfirio Diaz.txt"
-            self.personaje=["porfirio diaz"]
+            self.personaje=["porfirio diaz","porfirio diaz"]
         elif a==1:
             self.persDoc="Francisco I Madero.txt"
             self.personaje=["francisco i madero","francisco imadero"]
         elif a==2:
             self.persDoc="Emiliano Zapata.txt"
-            self.personaje=["emiliano zapata"]
+            self.personaje=["emiliano zapata","emiliano zapata"]
         elif a==3:
             self.persDoc="Venustiano Carranza.txt"
-            self.personaje=["venustiano carranza"]
+            self.personaje=["venustiano carranza","venustiano carranza" ]
         elif a==4:
             self.persDoc="Francisco Villa.txt"
             self.personaje=["francisco villa","pancho villa"]
@@ -43,15 +43,13 @@ class AdivinaQuien():
         respuesta = sr.AudioFile('respuesta.wav')
         with respuesta as source:
             audio=self.r.record(source)
-        print(type(audio))
         texto=self.r.recognize_google(audio,language='es-mx',show_all=True)
         listaTexto=texto['alternative']
         #Guarda las respuestas recibidas en una lista
         listaRespuestas=list()
         for i in listaTexto:
             listaRespuestas.append(i['transcript'])
-        print(listaRespuestas)
-        return listaRespuestas
+        return self.verifica(listaRespuestas)
 
     def pistaPersonaje(self,line):
         f=open(self.persDoc,'rb')
@@ -66,12 +64,9 @@ class AdivinaQuien():
 #Verifica si la lista de los personajes es igual a los que se tiene en las respuestas
     def verifica(self,listaPersona):
         ganador=False
+        print(listaPersona)
         for pp in listaPersona:
-            if pp==self.personaje[0]:
+            if pp==self.personaje[0] or pp==self.personaje[1]:
                 ganador=True
                 break
-            if len(self.personaje>1):
-                if pp==self.personaje[1]:
-                    ganador=True
-                    break
         return ganador

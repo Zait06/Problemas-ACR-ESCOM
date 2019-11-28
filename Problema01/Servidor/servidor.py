@@ -38,27 +38,26 @@ class ActivePool(object):
         #datoAud=conn.recv(tamReciv)
 
         while len(datoAud) < tamReciv:
-            print("recibiendo ...")
+            logging.debug("Recibiendo ...")
             packet = conn.recv(tamReciv-len(datoAud))
             if not packet:
-                print("Extendidoasdas...")
                 return None
-            print("Extendido...")
+            logging.debug("Extendido...")
             datoAud.extend(packet)
         f.write(datoAud)
         AUDIO_FILE = path.join(path.dirname(path.realpath(__file__)), "respuesta.wav")
-        
+
         
     def makeInactive(self,name,num,jue):     # Verificacion y liberacion del candado
         self.active.remove(name)
-        resp=jue.convAudText()              # El audio recibido, se manda a texto
-        logging.debug('Liberando candado')
-        acabado=jue.verifica(resp)         # Verifica si alguien ha adivinado
+        acabado=jue.convAudText()              # El audio recibido, se manda a texto y verifica si alguien ha adivinado
+        logging.debug('Liberando candado')        
         if not acabado:
             self.libera()
         return acabado,name
 
     def libera(self):   # Liberacion del candado
+        logging.debug("Candado liberado")
         self.lock.release()
 
 class Servidor():
@@ -134,18 +133,21 @@ class Servidor():
                         time.sleep(1)
                         pool.makeActive(name,conn)    # Espera de tiro
                         time.sleep(1)
-                        pool.makeInactive(name,num,self.adqu)
-                    self.contador+=1
-                if self.numPistas<=5:
-                    if self.contador==self.juga:
-                        self.numPistas+=1
+                        self.hayGanador,self.ganador=pool.makeInactive(name,num,self.adqu)
+                        self.contador+=1
+                conn.sendall(bytes('otrotur','ascii'))  # Mensaje para que espere el tiro de los demas
+                conn.sendall("Espera la respuesta de los otros jugadores".encode())   # Mensaje de espera al cliente
+                time.sleep(1)
+                if self.numPistas<=5:   # Si el numero de las pistas es menor a 5 podemos mandar las otras
+                    if self.contador==self.juga:    # Si el contador es igual al numero de jugadores,
+                        self.numPistas+=1           # Envio las pistas a los demas
                         for i in self.listConec:  # Manda siguiente pista
-                            i.sendall(bytes(self.adqu.pistaPersonaje(self.numPistas),'ascii'))
+                            i.sendall(bytes(self.adqu.pistaPersonaje(self.numPistas)))
                             time.sleep(1)
                         self.contador=0
                 elif self.numPistas>5 and not self.hayGanador:
                     for i in self.listConec:
-                        i.sendall(bytes('Juego terminado'))
+                        i.sendall(bytes('Juego terminado','ascii'))
         except Exception as e:
             print(e)
         finally:

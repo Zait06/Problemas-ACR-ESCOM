@@ -22,7 +22,6 @@ class Cliente():
             os.system("cls")
             print("Conectado, esperando a todo los jugadores...\n")
             msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
-            print(msgServer)
             msgRecib=msgServer[0].decode()   # Mensaje decodificado
             if msgRecib=="go":
                 self.aJugar()
@@ -42,11 +41,7 @@ class Cliente():
                 else:
                     print("Algo anda mal :c")
 
-                #sizefile = os.stat(self.archivo).st_sizeasdf
-                #self.ClientTCP.send(str.encode(str(sizefile)))  # Mandamos el tamaño del archivo
-
                 # Enviar archivo de audio
-<<<<<<< HEAD
 
                 arr = array('B')
                 result = stat("personaje.wav")
@@ -59,14 +54,13 @@ class Cliente():
                 #audio=open(self.archivo, "rb"
                 self.ClientTCP.sendall(arr)  # Envia audio
                 #audio.close()
-=======
-                audio=open(self.archivo, "rb")
-                content = audio.read()
-                self.ClientTCP.sendall(content)  # Envia audio
-                audio.close()
->>>>>>> 72ec5529f44244eafc2cd8bef0f0f6053a69dbf1
                 print("Enviado...")
+            elif msgRecib=="otrotur":
+                msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+                msgRecib=msgServer[0].decode()   # Mensaje decodificado
+                print(msgRecib)
             else:
+                os.system("cls")
                 print(msgRecib)
 
 #Metodo para grabar

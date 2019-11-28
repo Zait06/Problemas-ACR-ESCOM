@@ -46,6 +46,7 @@ class Cliente():
                 #self.ClientTCP.send(str.encode(str(sizefile)))  # Mandamos el tamaño del archivo
 
                 # Enviar archivo de audio
+<<<<<<< HEAD
 
                 arr = array('B')
                 result = stat("personaje.wav")
@@ -58,6 +59,12 @@ class Cliente():
                 #audio=open(self.archivo, "rb"
                 self.ClientTCP.sendall(arr)  # Envia audio
                 #audio.close()
+=======
+                audio=open(self.archivo, "rb")
+                content = audio.read()
+                self.ClientTCP.sendall(content)  # Envia audio
+                audio.close()
+>>>>>>> 72ec5529f44244eafc2cd8bef0f0f6053a69dbf1
                 print("Enviado...")
             else:
                 print(msgRecib)

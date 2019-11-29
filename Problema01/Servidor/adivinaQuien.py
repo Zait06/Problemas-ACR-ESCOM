@@ -23,7 +23,7 @@ class AdivinaQuien():
         a=rand.randrange(5)
         if a==0:    
             self.persDoc="Porfirio Diaz.txt"
-            self.personaje=["porfirio diaz","porfirio diaz"]
+            self.personaje=["porfirio díaz","porfirio diaz"]
         elif a==1:
             self.persDoc="Francisco I Madero.txt"
             self.personaje=["francisco i madero","francisco imadero"]
@@ -48,7 +48,7 @@ class AdivinaQuien():
         #Guarda las respuestas recibidas en una lista
         listaRespuestas=list()
         for i in listaTexto:
-            listaRespuestas.append(i['transcript'])
+            listaRespuestas.append(i['transcript'].lower())
         return self.verifica(listaRespuestas)
 
     def pistaPersonaje(self,line):
@@ -67,6 +67,7 @@ class AdivinaQuien():
         print(listaPersona)
         for pp in listaPersona:
             if pp==self.personaje[0] or pp==self.personaje[1]:
+                print("Hay un ganador")
                 ganador=True
                 break
         return ganador

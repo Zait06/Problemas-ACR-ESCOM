@@ -2,6 +2,7 @@
     Autores:
         Hernández López Ángel Zait
         Luciano Espina Melisa
+        python servidor.py 127.0.0.1 8080 2
 '''
 import os
 import sys
@@ -45,7 +46,7 @@ class Cliente():
 
                 arr = array('B')
                 result = stat("personaje.wav")
-                f = open("C:/Users/cat-b/Documents/GitHub/Problemas-ACR-ESCOM/Problema01/Cliente/personaje.wav", 'rb')
+                f = open(self.archivo, 'rb')
                 arr.fromfile(f, result.st_size)
                 au = os.path.getsize('personaje.wav')
                 tamEnvi=str(au)
@@ -59,6 +60,11 @@ class Cliente():
                 msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
                 msgRecib=msgServer[0].decode()   # Mensaje decodificado
                 print(msgRecib)
+            elif msgRecib=="fin":
+                msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+                msgRecib=msgServer[0].decode()   # Mensaje decodificado
+                print(msgRecib)
+                break
             else:
                 os.system("cls")
                 print(msgRecib)

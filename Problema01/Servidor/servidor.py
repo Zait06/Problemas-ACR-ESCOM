@@ -148,10 +148,12 @@ class Servidor():
                         self.contador=0
                 elif self.numPistas>5:
                     break
-            for i in self.listConec:
-                i.sendall(bytes('fin','ascii'))
-                i.sendall(bytes('Juego terminado\n','ascii'))
-                i.sendall(bytes('Ganador: '+ self.ganador, 'ascii'))
+            conn.sendall(bytes('fin','ascii'))
+            conn.sendall(bytes('Juego terminado\n','ascii'))
+            name=threading.currentThread().getName()    # nombre del jugador actual
+            conn.sendall(bytes(name,'ascii'))
+            time.sleep(0.5)
+            conn.sendall(bytes(self.ganador,'ascii'))
         except Exception as e:
             print(e)
         finally:

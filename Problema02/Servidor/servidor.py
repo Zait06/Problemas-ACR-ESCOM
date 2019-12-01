@@ -1,9 +1,12 @@
 import sys
 from correo import *
 from archivos import *
-from accesoRemoto import *
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
+
+class AccesoRemoto():
+    def darPaso(self):      # Da el visto bueno para la inspeccion
+        return True
 
 class Servidor():
     def __init__(self,HOST,PORT,NAMERPC):

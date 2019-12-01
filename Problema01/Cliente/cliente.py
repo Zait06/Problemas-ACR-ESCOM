@@ -2,6 +2,7 @@
     Autores:
         Hernández López Ángel Zait
         Luciano Espina Melisa
+        python servidor.py 127.0.0.1 8080 2
 '''
 import os
 import sys
@@ -59,6 +60,11 @@ class Cliente():
                 msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
                 msgRecib=msgServer[0].decode()   # Mensaje decodificado
                 print(msgRecib)
+            elif msgRecib=="fin":
+                msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+                msgRecib=msgServer[0].decode()   # Mensaje decodificado
+                print(msgRecib)
+                break
             else:
                 os.system("cls")
                 print(msgRecib)

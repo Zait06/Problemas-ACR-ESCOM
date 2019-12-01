@@ -52,8 +52,9 @@ class ActivePool(object):
         self.active.remove(name)
         acabado=jue.convAudText()              # El audio recibido, se manda a texto y verifica si alguien ha adivinado
         logging.debug('Liberando candado')        
-        if not acabado:
-            self.libera()
+        self.libera()
+        if acabado:
+            logging.debug(str(acabado))
         return acabado,name
 
     def libera(self):   # Liberacion del candado
@@ -90,7 +91,7 @@ class Servidor():
                 self.listConec.append(conn)
 
                 if len(self.listHilos)<self.juga:
-                    logging.debug('Conectadndo Jugador-'+str(j)+' con direccion {}'.format(addr))
+                    logging.debug('Conectando con Jugador-'+str(j)+' con direccion {}'.format(addr))
                     hilo_jugador=threading.Thread(name='Jugador-'+str(j),
                                                 target=self.iniciarJuego,
                                                 args=(conn,addr,j,self.pool,self.sema),)
@@ -135,8 +136,8 @@ class Servidor():
                         time.sleep(1)
                         self.hayGanador,self.ganador=pool.makeInactive(name,num,self.adqu)
                         self.contador+=1
-                conn.sendall(bytes('otrotur','ascii'))  # Mensaje para que espere el tiro de los demas
-                conn.sendall("Espera la respuesta de los otros jugadores".encode())   # Mensaje de espera al cliente
+                        conn.sendall(bytes('otrotur','ascii'))  # Mensaje para que espere el tiro de los demas
+                        conn.sendall("Espera la respuesta de los otros jugadores".encode())   # Mensaje de espera al cliente
                 time.sleep(1)
                 if self.numPistas<=5:   # Si el numero de las pistas es menor a 5 podemos mandar las otras
                     if self.contador==self.juga:    # Si el contador es igual al numero de jugadores,
@@ -145,9 +146,12 @@ class Servidor():
                             i.sendall(bytes(self.adqu.pistaPersonaje(self.numPistas)))
                             time.sleep(1)
                         self.contador=0
-                elif self.numPistas>5 and not self.hayGanador:
-                    for i in self.listConec:
-                        i.sendall(bytes('Juego terminado','ascii'))
+                elif self.numPistas>5:
+                    break
+            for i in self.listConec:
+                i.sendall(bytes('fin','ascii'))
+                i.sendall(bytes('Juego terminado\n','ascii'))
+                i.sendall(bytes('Ganador: '+ self.ganador, 'ascii'))
         except Exception as e:
             print(e)
         finally:

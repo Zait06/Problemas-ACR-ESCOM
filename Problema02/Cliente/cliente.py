@@ -31,11 +31,27 @@ class Cliente():
                 self.correo()
             elif self.URL[3]=="archivos":
                 self.archivos()
+            nuser=self.user.split("@")
+            print("\n\t\tHASTA PRONTO "+nuser[0]+"\n")
         except Exception as e:
             print(e)
         
     def accRem(self):
-        print("jeje")
+        while True:
+            orden=input("user@"+self.user+">> ")
+            instruc=orden.lower().split()
+            if instruc[0]=='netstat':                                # Crear un archivo
+                vamos=self.s.darPaso()
+                if vamos:
+                    os.system(orden)                                # Se hace el escaneo de puertos en el cliente
+            elif instruc[0]=='help' or instruc[0]=='?':             # Lista de comandos
+                vamos=self.s.darPaso()
+                if vamos:
+                    os.system("netstat --help")                     # Se despliega la lista de las opciones que tiene el cliente
+            elif instruc[0]=='exit':                                # Salir de todo
+                break
+            else:
+                print("Instruccion incorrecta, intente de nuevo\n")
 
     def correo(self):
         nuser=self.user.split("@")
@@ -47,7 +63,6 @@ class Cliente():
             elif instruc[0]=='help' or instruc[0]=='?':             # Lista de comandos
                 print(self.s.ayudameCorr())
             elif instruc[0]=='exit':                                # Salir de todo
-                print("\n\t\tHASTA PRONTO "+user+"\n")
                 break
             else:
                 print("Instruccion incorrecta, intente de nuevo\n")
@@ -63,7 +78,6 @@ class Cliente():
             elif instruc[0]=='help' or instruc[0]=='?':             # Lista de comandos
                 print(self.s.ayudameArch())
             elif instruc[0]=='exit':                                # Salir de todo
-                print("\n\t\tHASTA PRONTO "+user+"\n")
                 break
             else:
                 print("Instruccion incorrecta, intente de nuevo\n")

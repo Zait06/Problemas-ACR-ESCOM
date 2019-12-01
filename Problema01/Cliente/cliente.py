@@ -68,6 +68,15 @@ class Cliente():
             else:
                 os.system("cls")
                 print(msgRecib)
+        msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+        nombreJug=msgServer[0].decode()   # Mensaje decodificado
+        msgServer=self.ClientTCP.recvfrom(1024)    # Mensaje recibido del servidor
+        msgRecib=msgServer[0].decode()   # Mensaje decodificado
+        print(nombreJug+" - "+msgRecib)
+        if nombreJug==msgRecib:
+            print("Felicidades, has ganado")
+        else:
+            print("Ganador: "+msgRecib)
 
 #Metodo para grabar
     def grabar(self):

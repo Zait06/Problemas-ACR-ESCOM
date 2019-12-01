@@ -45,7 +45,7 @@ class Cliente():
 
                 arr = array('B')
                 result = stat("personaje.wav")
-                f = open("C:/Users/cat-b/Documents/GitHub/Problemas-ACR-ESCOM/Problema01/Cliente/personaje.wav", 'rb')
+                f = open(self.archivo, 'rb')
                 arr.fromfile(f, result.st_size)
                 au = os.path.getsize('personaje.wav')
                 tamEnvi=str(au)

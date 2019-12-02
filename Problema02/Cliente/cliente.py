@@ -12,24 +12,24 @@ class Cliente():
         self.servicio=""
         try:
             os.system("cls")
-            self.s=xmlrpc.client.ServerProxy('http://'+self.URL[2])  # Quien atiende las solicitudes
+            self.s=xmlrpc.client.ServerProxy('http://'+self.URL[0])  # Quien atiende las solicitudes
             print("\t\tSERVICIO RPC")
-            self.servicio=self.s.eleccion(self.URL[3])
+            self.servicio=self.s.eleccion(self.URL[1])
             nueva=input('Presione [M] si es que cuenta con un perfil, sino,\nprecione [N] para crear una nueva cuenta: ')
             self.user=input("Usuario: ")
             self.pasw=getpass.getpass("Contraseña: ")
 
             if nueva.upper()=='M':
-                ing=self.s.ingresar(self.user,self.pasw,self.URL[3])
+                ing=self.s.ingresar(self.user,self.pasw,self.URL[0])
             else:
-                ing=self.s.registrar(self.user,self.pasw,self.URL[3])
+                ing=self.s.registrar(self.user,self.pasw,self.URL[0])
 
             print("\n\tServicio de "+self.servicio+". Sesión iniciada")
-            if self.URL[3]=="acceso-remoto":
+            if self.URL[1]=="acceso-remoto":
                 self.accRem()
-            elif self.URL[3]=="correo":
+            elif self.URL[1]=="correo":
                 self.correo()
-            elif self.URL[3]=="archivos":
+            elif self.URL[1]=="archivos":
                 self.archivos()
             nuser=self.user.split("@")
             print("\n\t\tHASTA PRONTO "+nuser[0]+"\n")

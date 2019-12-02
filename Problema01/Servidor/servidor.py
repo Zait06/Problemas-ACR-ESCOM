@@ -140,7 +140,7 @@ class Servidor():
                         conn.sendall("Espera la respuesta de los otros jugadores".encode())   # Mensaje de espera al cliente
                 time.sleep(1)
                 if self.numPistas<=5:   # Si el numero de las pistas es menor a 5 podemos mandar las otras
-                    if self.contador==self.juga:    # Si el contador es igual al numero de jugadores,
+                    if (self.contador-1)==self.juga:    # Si el contador es igual al numero de jugadores,
                         self.numPistas+=1           # Envio las pistas a los demas
                         for i in self.listConec:  # Manda siguiente pista
                             i.sendall(bytes(self.adqu.pistaPersonaje(self.numPistas)))
@@ -152,7 +152,7 @@ class Servidor():
             conn.sendall(bytes('Juego terminado\n','ascii'))
             name=threading.currentThread().getName()    # nombre del jugador actual
             conn.sendall(bytes(name,'ascii'))
-            time.sleep(0.5)
+            time.sleep(2)
             conn.sendall(bytes(self.ganador,'ascii'))
         except Exception as e:
             print(e)

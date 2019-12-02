@@ -57,9 +57,12 @@ class Servidor():
             with open(dirAcc,"a") as f:                             # Abrir archivo para agregar un nuevo miembro
                 f.write(usua+':'+pasw+'\n')
             otrus=usua.split('@')   # Si es un correo, este solo tomará un string antes del @ para el nombre del usuario
-            os.mkdir("servicios\\"+direc+"\\"+otrus[0])                                          # Se crea una carpeta para el nuevo miembro
-            with open("servicios\\"+direc+"\\"+otrus[0]+"\\inicio.txt",'w') as f:            # Da archivo de bienvenida
-                f.write("Bienvenid@ "+otrus[0]+" al servicio RPC de "+direc)
+            if not direc=="acceso-remoto":
+                os.mkdir("servicios\\"+direc+"\\"+otrus[0])                                          # Se crea una carpeta para el nuevo miembro
+                with open("servicios\\"+direc+"\\"+otrus[0]+"\\inicio.txt",'w') as f:            # Da archivo de bienvenida
+                    f.write("Bienvenid@ "+otrus[0]+" al servicio RPC de "+direc)
+            else:
+                simon=True
             simon=True
         except Exception as e:
             print(e)

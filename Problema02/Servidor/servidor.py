@@ -26,6 +26,7 @@ class Servidor():
 
     def eleccionCliente(self,opc):
         servicio=''
+        print('Si entró')
         if opc=="acceso-remoto":
             self.server.register_instance(AccesoRemoto())
             servicio='Acceso Remoto'
